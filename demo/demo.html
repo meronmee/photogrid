@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
+
+    <title>Photo Grid Demo</title>
+    <link href="http://cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../dist/jquery.photogrid.css" />
+    <style type="text/css">
+        .bodybox{
+            margin:30px;
+        }       
+    </style>
+    <script type="text/javascript" src=" http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+    <script src="../dist/jquery.photogrid.js"></script>
+
+    <script type="text/javascript">       
+        // All images need to be loaded for this plugin to work so
+        // we end up waiting for the whole window to load in this example
+        $(window).load(function () {
+            $(document).ready(function(){
+                $("#ImageBox").photogrid({
+                    itemSelector: ".item",
+                    endless: endless,
+                    endlessTimes: 3,
+                    endlessDistance: 50 //参考footer的高度调整           
+                });
+            });
+        });
+
+        function endless(done, imgReady){
+           var colors = ['ff0000','00ff00' ,'0000ff', '808080', '008080' , 'FF6600'];
+           var randomColor = colors[Math.ceil((Math.random() * 100)) % colors.length];
+
+           var ext = new Date().getTime();//仅供测试，浏览器保证不使用缓存中的图片
+
+           var imgs = [
+                'http://placehold.it/480x300/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/500x300/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/600x500/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/1024x500/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/780x857/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/490x570/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/480x480/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/880x530/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/280x400/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/450x550/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/680x300/'+randomColor+'/ffffff?'+ext,
+                'http://placehold.it/300x600/'+randomColor+'/ffffff?'+ext
+           ];  
+
+           //for(var i=0; i<imgs.length; i++){
+           //用for循环时，最后一个img的onload不会触发，why？
+           var imgOk = [];
+           $.each(imgs, function(i, url){     
+                console.log(i+"/"+imgs.length+" is loading, url:"+url);
+
+                var img = document.createElement('img');               
+                img.height = 200;
+                img.index = i;
+                img.src = url;
+                
+                
+                //lazy show the photos one by one
+                imgReady(img, function ready(){
+                    var index = img.index;
+                    console.log(index+"/"+imgs.length+" loaded");
+
+                    var $item =  $('<div class="item"></div>').append($('<a href="'+img.src+'"></a>').append(img)).appendTo("#ImageBox");
+                    $item.data('itemData', {
+                        title: img.src,
+                        domain: img.src,
+                        dimensions: img.naturalWidth + ' x '+ img.naturalHeight,
+                        description: 'description-'+index,
+                        srcLink: img.src,
+                        pageLink: 'http://www.baidu.com'
+                    });
+                    imgOk.push(index);
+                    //最后一个
+                    //加载顺序是不可预知的，最后一个可能先于其他的进行加载
+                    //if(index == (imgs.length - 1)){    
+                     if(imgOk.length === imgs.length){  
+                        console.log("------done--------");
+                        done();
+                    }
+                }, null, function error(){
+                    var index = img.index;
+                    console.log(index+"/"+imgs.length+" error");
+
+                    imgOk.push(index);
+                    //最后一个
+                    //加载顺序是不可预知的，最后一个可能先于其他的进行加载
+                    //if(index == (imgs.length - 1)){    
+                     if(imgOk.length === imgs.length){  
+                        console.log("------done--------");
+                        done();
+                    }
+                });//imgReady                   
+           });//each
+        }//endlessCbk
+    </script>
+ </head>
+
+ <body> 
+   <div class="bodybox">
+    <div id="ImageBox">
+        <!-- height attribute of img is required  -->
+        <div class="item"><a href="images\1.jpg"><img src="images\1.jpg" title="1.jpg" height="200"/></a></div>
+        <div class="item"><a href="images\2.jpg"><img src="images\2.jpg" title="2.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\3.jpg" title="3.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\4.jpg"title="4.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\5.jpg" title="5.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\6.jpg" title="6.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\7.jpg" title="7.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\8.jpg" title="8.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\9.jpg" title="9.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\11.jpg" title="11.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\13.jpg" title="13.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\14.jpg" title="14.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\15.jpg" title="15.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\16.jpg" title="16.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\17.jpg" title="17.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\e.gif" title="e.gif" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\f.gif" title="f.gif" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\g.gif" title="g.gif" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\h.gif" title="h.gif" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\i.gif" title="i.gif" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\j.gif" title="j.gif" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\k.gif" title="k.gif" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\l.jpg" title="l.jpg" height="200"/></a></div>
+        <div class="item"><a href="#"><img src="images\m.png" title="m.png" height="200"/></a></div>
+    </div>
+   </div>
+ </body>
+</html>
