@@ -4,7 +4,7 @@ A jQuery plugin to arrange images into a flexible grid. It looks like Google ima
 
 ## Demo
 Coming soon...
-![demo](./snapshot.png)
+![demo](./snapshot.jpg)
 
 ## Usage
 Coming soon...
