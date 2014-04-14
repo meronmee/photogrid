@@ -3,8 +3,9 @@
 A jQuery plugin to arrange images into a flexible grid. It looks like Google images gallery.
 
 ##Main features
+- Arrange images automatically
 - Like Google images gallery
-- Endless scroll supported
+- Endless scrolling supported
 - Ajax supported
 - Precompiled template supported, e.g. Handlebars   
 
@@ -171,7 +172,7 @@ function endless(done, imgReady){
         'http://placehold.it/600x500/'+randomColor+'/ffffff?',
         'http://placehold.it/1024x500/'+randomColor+'/ffffff?',
         'http://placehold.it/780x857/'+randomColor+'/ffffff?',
-        'http://placehold.it/490x570/'+randomColor+'/ffffff?,
+        'http://placehold.it/490x570/'+randomColor+'/ffffff?',
         'http://placehold.it/480x480/'+randomColor+'/ffffff?',
         'http://placehold.it/880x530/'+randomColor+'/ffffff?',
         'http://placehold.it/280x400/'+randomColor+'/ffffff?',
@@ -192,7 +193,7 @@ function endless(done, imgReady){
         /**
          * lazy show the photos one by one
          * imgReady - a fast way to detect the image's size.
-         * @see :http://code.google.com/p/redeem-point-system/source/browse/trunk/WebRoot/js/util/imgReady.js?r=85
+         * @see: http://code.google.com/p/redeem-point-system/source/browse/trunk/WebRoot/js/util/imgReady.js?r=85
         */
         imgReady(img, function ready(){
             var index = img.index;
