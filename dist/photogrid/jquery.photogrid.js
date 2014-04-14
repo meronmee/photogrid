@@ -1052,7 +1052,6 @@
 		 */
 		,maxMargin: 15
 		/**
-		 * 行内条目之间的最大水平margin
 		 * 设为 true 将在on window resize events时改变更新布局
 		 * @type {boolean}
 		 * @default true
