@@ -24,10 +24,10 @@ Add three lines to the HEAD:
 Add this to page code:
 ```html
 <div id="ImageBox">
-    <!-- height attribute of img  is required -->
-    <div class="item"><a href="#"><img src="images\1.jpg" height="200"/></a></div>
-    <div class="item"><a href="#"><img src="images\2.jpg" height="200"/></a></div>
-    <div class="item"><a href="#"><img src="images\3.jpg" height="200"/></a></div>
+    <!-- height attribute of img  is required; `data-src` attribute define the big image to show. -->
+    <div class="item"><a href="#"><img src="images\1.jpg" data-src="images\1.big.jpg" height="200"/></a></div>
+    <div class="item"><a href="#"><img src="images\2.jpg" data-src="images\2.big.jpg" height="200"/></a></div>
+    <div class="item"><a href="#"><img src="images\3.jpg" data-src="images\3.big.jpg" height="200"/></a></div>
 </div>
 ```
 Add this to page script:
@@ -90,7 +90,7 @@ Add this to page script:
     How long the plugin will wait before `window.onload` event. After this dual, the plugin will initialize forcely. This option is valid only when `initAfterWinLoad` is set to true.
     
 
--  `minImageSize`:  **{Number}[Optional]**, **default**:`16`
+-  `minImageSize`:  **{Number}[Optional]**, **default**:`0`
     Images whose size(height or width) less than `minImageSize` will not show.
 
 -  `firstItemClass`:  **{String}[Optional]**, **default**:`''`
@@ -104,6 +104,9 @@ Add this to page script:
 
 -  `onAppended`:  **{Function}[Optional]**, **default**:`null`
     Define a function to be called when new items are appened dynamically.
+
+-  `onUpdated`:  **{Function}[Optional]**, **default**:`null`
+    Define a function to be called when new items are updated dynamically.
             
 -  `endless`:  **{Function}[Optional]**, **default**:`null`
     Endless scrolling(or infinite scrolling). If it is a function, the page will keeps loading with new items attached to the end. The function has two parameter: `done` and `imgReady`. After updating the DOM, you must call `done();` manually. See the example below. 
@@ -140,12 +143,16 @@ If `detailsTemplate` is not null, while `templateRender` is null, the built-in f
 -  `imageViewheight`:  **{Number}[Optional]**, **default**:`440`
 Define the height of the image viewer. 
 
+-  `imageViewImageBoxWidth`:  **{String}[Optional]**, **default**:`"65%"`
+Define the width of the left part(.photogrid-iv-imgbox) of image viewer.
+
 ## API
 Call these methods like this:
 ```js
 $("#ImageBox").photogrid('appended');
 ```
 - `appended`: inform the plugin that the new items are appended to the DOM, and it can take the next step.
+- `updated`: inform the plugin that the items are updated (eg. a picture is deleted), and it can take the next step.
 - `destroy`:   destory the plugin.
 - `stopEndless`: stop endless scrolling.
 

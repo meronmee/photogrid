@@ -124,24 +124,63 @@
 			 * 简单检查是否是http或https开头的url、
 			 * @return {Boolean}		 [description]
 			 */
-			isHttpUrl: function(url){
+			 isHttpUrl: function(url){
 				var re = new RegExp('^(http|https)://', 'i');
 				return re.test(url);
-			},
+			}
 			/**
 			 * 从url解析出域名
 			 * @param	{String} url
 			 * @return {String}
 			 */
-			getDomainFormUrl: function(url){
+			,getDomainFormUrl: function(url){
 				if(typeof url === 'undefined' || null === url){ 
 					return '';
 				}
 				var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
 				var domain = matches && matches[1];
 				return domain;
-			}, //eof:getDomainFormUrl
-			noop:function(){}
+			} //eof:getDomainFormUrl
+			,getSize: function(size){
+				size = $.trim(''+size);
+				if(size.match(/^\d+$/)){
+					return size +'px';
+				}
+				return size;
+			}
+			/**
+		     * 生成范围内的随机数
+		     * @param  {Integer} min 下限
+		     * @param  {Integer} max 上限
+		     * @return {Integer}     [description]
+		     */
+		    ,random: function(min,max){
+		      return Math.floor(min+Math.random()*(max-min));
+		    }
+		    /**
+		     * 生成范围内的随机日期毫秒值
+		     * @param  {Integer} min 从今天起的天数，负数为今天之前
+		     * @param  {[type]} max 从今天起的天数，正数为今天之后
+		     * @return {[type]}     [description]
+		     */
+		    ,randomDateLong: function(min,max){
+		      if(!min){
+		        min = -7;
+		      }
+		      if(!max){
+		        max = 7;
+		      }
+		      var now = new Date();
+		      var nowLong = now.getTime();
+		      var oneDayMs = 1000 * 60 * 60 * 24;//一天的毫秒值
+		      var finalMin = Math.min(min, max);
+		      var finalMax = Math.max(min, max);
+		      var begin = nowLong + (finalMin * oneDayMs);
+		      var end = nowLong + (finalMax * oneDayMs);
+
+		      return this.random(begin, end);
+		    }
+			,noop:function(){}
 		};//return
 	})();//Utils
 
@@ -195,7 +234,7 @@
 				//ImageView 主体结构
 				this.$imageView = $('<div class="photogrid-iv"></div>').append(
 					this.$imageViewWapper = $('<div class="photogrid-iv-wapper"></div>').append(
-						this.$imgbox = $('<div class="photogrid-iv-imgbox"></div>').append(
+						this.$imgbox = $('<div class="photogrid-iv-imgbox" style="width:'+this.opts.imageViewImageBoxWidth+';"></div>').append(
 								this.$loading = $('<div class="photogrid-loader"><b></b><b></b><b></b></div>'),
 								this.$shownImgLink = $('<a href="#" target="_blank"></a>').append(
 									this.$shownImg = $('<img class="photogrid-iv-img"/>')
@@ -322,7 +361,12 @@
 				if(this.$loading){
 					this.$loading.addClass('show-loader');
 				}
-				var newSrc = this.$currentItem.find('img').filter(':first').attr('src');
+				//结构:
+				//this.$shownImgLink = $('<a href="#" target="_blank"></a>').append(
+				//this.$shownImg = $('<img class="photogrid-iv-img"/>')
+				var $thisImg = this.$currentItem.find('img').filter(':first');
+				var newSrc = $thisImg.data('src') || $thisImg.attr('src');
+
 				this.$shownImgLink.attr('href', newSrc);
 
 				this.$shownImg.css('margin-top', 0).hide()
@@ -471,7 +515,7 @@
 			 * @type precompiled template 
 			 */
 		 	detailsTemplate: null
-		 /**
+		 	/**
 			* 编译后的模板渲染器
 			* 接受两个参数: template, context
 			* 必须返回一个渲染后的string
@@ -485,7 +529,7 @@
 			* 	rerurn template(context);
 			* @type {Function}
 			*/
-		 ,templateRender: null
+			,templateRender: null
 			 /**
 				* ImageView的高度
 				* height=内高+padding-top+padding-bottom
@@ -535,7 +579,9 @@
 		 */
 		var PhotoGrid = function(element, options){
 			var self = this;
+			var pgid = 'pgid_'+Utils.randomDateLong();
 			this.$element = $(element);
+			this.$element.attr('pgid', pgid);
 			this.opts = $.extend(true, {}, $.fn.photogrid.defaults, options);
 			this._config = {
 				 itemCls: 'photogrid-item'				 
@@ -612,6 +658,7 @@
 				this.opts.endlessDistance = parseInt(this.opts.endlessDistance);
 				this.opts.endlessTimeout = parseInt(this.opts.endlessTimeout);
 				this.opts.minImageSize = parseInt(this.opts.minImageSize);
+				this.opts.imageViewImageBoxWidth = Utils.getSize(this.opts.imageViewImageBoxWidth);
 				//初始化基准高度
 				if(this.opts.rowHeight){
 					this.$element
@@ -851,11 +898,12 @@
 					} else {
 						//第一次点击，新建之
 						var ivOptions = {
-							"detailsTemplate": self.opts.detailsTemplate,
-							"templateRender": self.opts.templateRender,
-							"height": self.opts.imageViewheight,
-							"itemSelector": '.'+self._config.itemCls,
-							"itemDataSelector": '.'+self._config.itemDataCls,
+							 "detailsTemplate": self.opts.detailsTemplate
+							,"templateRender": self.opts.templateRender
+							,"height": self.opts.imageViewheight
+							,"imageViewImageBoxWidth": self.opts.imageViewImageBoxWidth
+							,"itemSelector": '.'+self._config.itemCls
+							,"itemDataSelector": '.'+self._config.itemDataCls
 						};						
 						self.imageView = new ImageView($thisItem, self.$element, ivOptions);
 					}
@@ -867,7 +915,7 @@
 			}//initItemEvents
 
 			/**
-			 * 追加更更新条目
+			 * 追加更新条目
 			 * @return {[type]} [description]
 			 */
 			,appended: function(){
@@ -880,6 +928,21 @@
 				 if($.isFunction(this.opts.onAppended)){
 				 		//this.opts.onAppended.call(this, arg1,..,argN);
 				 		this.opts.onAppended();
+				 }
+			}
+			/**
+			 * 更新组件
+			 * @return {[type]} [description]
+			 */
+			,updated: function(){
+				this.initLayout();
+				this.imageView.destroy();
+				delete this.imageView;
+
+				this.initItemEvents();
+				if($.isFunction(this.opts.onUpdated)){
+				 		//this.opts.onUpdated.call(this, arg1,..,argN);
+				 		this.opts.onUpdated();
 				 }
 			}
 
@@ -1009,7 +1072,9 @@
 
 		//新建对象
 		return this.each(function() {
-			new PhotoGrid(this, opts);
+			if($(opts.itemSelector, this).length != 0){
+				new PhotoGrid(this, opts);
+			}
 		});
 	};//$.fn.photogrid
 
@@ -1082,7 +1147,7 @@
 		 * 宽度或高度低于此值的图片将不会显示
 		 * @type {Number}
 		 */
-		,minImageSize: 16
+		,minImageSize: 0
 		/**
 		 * 每行第一个条目的class
 		 * @type {String}
@@ -1105,6 +1170,11 @@
 		 * @type {function} functon(){}
 		 */
 		,onAppended: null
+		/**
+		 * 更新条目结束
+		 * @type {function} functon(){}
+		 */
+		,onUpdated: null
 		/**
 		 * 无限加载
 		 * 在此函数中添加新的条目，更新DOM，
@@ -1172,5 +1242,12 @@
 			* @type {Number}
 			*/
 		,imageViewheight: 440
+
+		 /**
+			* ImageView中左侧图片显示部分(.photogrid-iv-imgbox)的宽度
+			* 可以是百分百，也可以是像素值
+			* @type {String}
+			*/
+		,imageViewImageBoxWidth: "65%"
 	};//$.fn.photogrid.defaults
 })(jQuery);

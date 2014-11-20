@@ -11,14 +11,6 @@
  *  - [og-grid]http://tympanus.net/codrops/2013/03/19/thumbnail-grid-with-expanding-preview/
  * 
  */
-*,
-*:before,
-*:after {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-}
-
 .photogrid {
 	list-style: none;
 }
