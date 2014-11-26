@@ -392,6 +392,16 @@
 							self.$dimensions.text(itemData.dimensions);
 						}
 					})//load
+					.error(function(){
+						if(self.$loading){
+							self.$loading.removeClass('show-loader');
+						}
+						if(self.opts.pic404){
+							$(this).attr('src', self.opts.pic404);
+							self.$shownImgLink.attr('href', self.opts.pic404);
+							self.$currentItem.addClass('photogrid-iv-img-404');
+						}
+					})
 					.attr('src', newSrc);
 
 				//移动主体
@@ -555,6 +565,11 @@
 			 * @default .data
 			 */
 			,itemDataSelector: '.photogrid-item-data'
+			/**
+			 * 图片未找到时显示的默认图片地址
+			 * @type {String}
+			 */
+			,pic404: null
 		};
 
 		function noop(a) {}
@@ -904,6 +919,7 @@
 							,"imageViewImageBoxWidth": self.opts.imageViewImageBoxWidth
 							,"itemSelector": '.'+self._config.itemCls
 							,"itemDataSelector": '.'+self._config.itemDataCls
+							,"pic404": self.opts.pic404
 						};						
 						self.imageView = new ImageView($thisItem, self.$element, ivOptions);
 					}
@@ -1249,5 +1265,11 @@
 			* @type {String}
 			*/
 		,imageViewImageBoxWidth: "65%"
+		/**
+		 * 图片未找到时显示的默认图片地址,
+		 * 此时item上面会加上CSS类 photogrid-iv-img-404
+		 * @type {String}
+		 */
+		,pic404: null
 	};//$.fn.photogrid.defaults
 })(jQuery);
